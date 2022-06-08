@@ -1,5 +1,6 @@
-source("../../R/xTable.R")
 library(comprehenr)
+setwd("/workdir")
+source("R/xTable.R")
 
 describe("The function calculate_points", {
   it("return one point with draw", {
@@ -61,15 +62,15 @@ describe("The function calculate_diff_goals", {
 
 describe("The function calculate_xgoal", {
   it("The function calculate_xgoal is in R", {
-    x_goal <- list(inside = 1, outside = 1)
-    expected_goal <- calculate_xgoal(xGol = x_goal, shots_outsidebox = 1, shots_insidebox = 1)
+    x_goal <- list(inside = 1, outside = 1, penalty = 0)
+    expected_goal <- calculate_xgoal(xGol = x_goal, shots_outsidebox = 1, shots_insidebox = 1, total_penalties = 3)
     obtained_goal <- 2
     expect_equal(expected_goal, obtained_goal)
   })
   it("The function calculate_xgoal is in R", {
-    x_goal <- list(inside = 2, outside = 3)
-    expected_goal <- calculate_xgoal(xGol = x_goal, shots_outsidebox = 0, shots_insidebox = 2)
-    obtained_goal <- 4
+    x_goal <- list(inside = 2, outside = 3, penalty = 2)
+    expected_goal <- calculate_xgoal(xGol = x_goal, shots_outsidebox = 0, shots_insidebox = 2, total_penalties = 3)
+    obtained_goal <- 10
     expect_equal(expected_goal, obtained_goal)
   })
 })
@@ -96,22 +97,32 @@ describe("The function calculate_xpoints", {
 describe("The function xgoal_from_league_season", {
   it("xGoal for La Liga 2021", {
     expected_goal <- xgoal_from_league_season("140_2020")
-    obtained_goal <- list(inside = 0.125454, outside = 0.044485)
+    obtained_goal <- list(inside = 0.117440, outside = 0.043654, penalty = 0.744681)
     expect_equal(expected_goal, obtained_goal)
   })
   it("xGoal for MX 2020", {
-    expected_goal <- list(inside = 0.101, outside = 0.043)
+    expected_goal <- list(inside = 0.096171, outside = 0.045958, penalty = 0.785234)
     obtained_goal <- xgoal_from_league_season("262_2021")
     expect_equal(expected_goal, obtained_goal)
   })
   it("xGoal for Premier League 2020", {
-    expected_goal <- xgoal_from_league_season("39_2020")
-    obtained_goal <- list(inside = 0.107191, outside = 0.052831)
+    expected_goal <- xgoal_from_league_season("39_2021")
+    obtained_goal <- list(inside = 0.107191, outside = 0.052831, penalty = 0.809524)
     expect_equal(expected_goal, obtained_goal)
   })
   it("xGoal for Bundesliga 2020", {
     expected_goal <- xgoal_from_league_season("78_2020")
-    obtained_goal <- list(inside = 0.116232, outside = 0.044561)
+    obtained_goal <- list(inside = 0.110081, outside = 0.037332, penalty = 0.774774)
+    expect_equal(expected_goal, obtained_goal)
+  })
+  it("xGoal for Serie A 2020", {
+    expected_goal <- xgoal_from_league_season("135_2021")
+    obtained_goal <- list(inside = 0.104484, outside = 0.054466, penalty = 0.846666)
+    expect_equal(expected_goal, obtained_goal)
+  })
+  it("xGoal for Ligue 1 2020", {
+    expected_goal <- xgoal_from_league_season("61_2020")
+    obtained_goal <- list(inside = 0.108780, outside = 0.065102)
     expect_equal(expected_goal, obtained_goal)
   })
 })
@@ -203,5 +214,25 @@ describe("The function summarize_points_played_match", {
     )
     obtained_summary <- summarize_xpoints_played_match(table_Points)
     expect_equal(expected_summary, obtained_summary)
+  })
+})
+
+
+
+describe("The funtion previous_season", {
+  it("First example", {
+    expected_season <- "68_2020"
+    obtained_season <- previous_season("68_2021")
+    expect_equal(expected_season, obtained_season)
+  })
+  it("Second example", {
+    expected_season <- "135_2020"
+    obtained_season <- previous_season("135_2021")
+    expect_equal(expected_season, obtained_season)
+  })
+  it("Other example", {
+    expected_season <- "78_2025"
+    obtained_season <- previous_season("78_2026")
+    expect_equal(expected_season, obtained_season)
   })
 })

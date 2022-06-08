@@ -24,10 +24,17 @@ calculate_diff_goals <- function(home_xGol, away_xGol) {
 }
 
 xGoal_all_league <- list(
-  "262_2021" = list(inside = 0.101, outside = 0.043),
-  "140_2020" = list(inside = 0.125454, outside = 0.044485),
-  "78_2020"  = list(inside = 0.116232, outside = 0.044561),
-  "39_2020"  = list(inside = 0.107191, outside = 0.052831)
+  "262_2021" = list(inside = 0.096171, outside = 0.045958, penalty = 0.785234),
+  "140_2020" = list(inside = 0.117440, outside = 0.043654, penalty = 0.744681),
+  "140_2021" = list(inside = 0.117440, outside = 0.043654, penalty = 0.744681),
+  "78_2020"  = list(inside = 0.110081, outside = 0.037332, penalty = 0.774774),
+  "78_2021"  = list(inside = 0.110081, outside = 0.037332, penalty = 0.774774),
+  "39_2021"  = list(inside = 0.107191, outside = 0.052831, penalty = 0.809524),
+  "61_2020"  = list(inside = 0.108780, outside = 0.065102),
+  "88_2021"  = list(inside = 0.097606, outside = 0.059503, penalty = 0.815126),
+  "88_2020"  = list(inside = 0.097606, outside = 0.059503, penalty = 0.815126),
+  "94_2021"  = list(inside = 0.102894, outside = 0.056361, penalty = 0.718182),
+  "135_2021" = list(inside = 0.104484, outside = 0.054466, penalty = 0.846666)
 )
 
 xgoal_from_league_season <- function(league_season) {
@@ -35,8 +42,8 @@ xgoal_from_league_season <- function(league_season) {
   return(xGoal)
 }
 
-calculate_xgoal <- function(xGol, shots_outsidebox, shots_insidebox) {
-  xgoal <- shots_outsidebox * xGol$outside + shots_insidebox * xGol$inside
+calculate_xgoal <- function(xGol, shots_outsidebox, shots_insidebox, total_penalties) {
+  xgoal <- shots_outsidebox * xGol$outside + shots_insidebox * xGol$inside + total_penalties * xGol$penalty
   return(xgoal)
 }
 
@@ -55,6 +62,30 @@ cli_calculate_xpoints <- function() {
       help = "League and season like 78_2020: \n
         Bundesliga id is 78 \n
         Premier id is 39 \n",
+      metavar = "character",
+      type = "character"
+    )
+  )
+  opt_parser <- OptionParser(option_list = listaOpciones)
+  opciones <- parse_args(opt_parser)
+  return(opciones)
+}
+
+cli_prediction_from_multinom <- function() {
+  listaOpciones <- list(
+    make_option(
+      c("-l", "--league-season"),
+      default = "262_2021",
+      help = "League and season like 78_2020: \n
+        Bundesliga id is 78 \n
+        Premier id is 39 \n",
+      metavar = "character",
+      type = "character"
+    ),
+    make_option(
+      c("-r", "--round"),
+      default = "1",
+      help = "Round",
       metavar = "character",
       type = "character"
     )
@@ -156,4 +187,21 @@ add_xpoints_and_points <- function(league) {
   home_Points <- home_Points_all_matches(league)
   away_Points <- away_Points_all_matches(league)
   league <- cbind(league, tibble(home_xPoints, away_xPoints, home_Points, away_Points))
+}
+
+previous_season <- function(id_season) {
+  id <- str_split(id_season, "_")[[1]][1]
+  previous_season <- as.character(as.numeric(str_split(id_season, "_")[[1]][2]) - 1)
+  id_previous_season <- paste(id, previous_season, sep = "_")
+  return(id_previous_season)
+}
+
+get_strength_atack <- function(league, id) {
+  attack <- c(league %>% filter(home_id == id) %>% .$home_xGol, league %>% filter(away_id == id) %>% .$away_xGol)
+  return(mean(attack))
+}
+
+get_strength_deffense <- function(league, id) {
+  attack <- c(league %>% filter(home_id == id) %>% .$away_xGol, league %>% filter(away_id == id) %>% .$home_xGol)
+  return(mean(attack))
 }

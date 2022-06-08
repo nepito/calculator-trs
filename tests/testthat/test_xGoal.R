@@ -1,18 +1,11 @@
-source("../../R/xGoal.R")
-source("../../R/xTable.R")
 library("tidyverse")
-
-describe("Dummy tests", {
-  it("Return one", {
-    expected <- 1
-    obtained <- return_one()
-    expect_equal(expected, obtained)
-  })
-})
+setwd("/workdir")
+source("R/xGoal.R")
+source("R/xTable.R")
 
 describe("The class Teams", {
   teams <- Teams$new()
-  path_league <- "../data/league_262_2021.csv"
+  path_league <- "tests/data/league_262_2021.csv"
   raw_league <- read_csv(path_league)
   expected_league <- xgoal_team_place(raw_league)
   it("Read a league file", {
@@ -43,7 +36,7 @@ describe("The class Teams", {
     expect_true(length(obtained_bootstrapped_xgoal) == 2000)
   })
   it("The method set_names works correctly", {
-    path_names <- "../data/names_ids_262_2021.csv"
+    path_names <- "tests/data/names_ids_262_2021.csv"
     teams$set_names(path_names)
     expected_names <- read_csv(path_names)
     expect_equal(expected_names, teams$names)
@@ -98,9 +91,9 @@ describe("The class Heat_Map", {
     expect_true(is_there_object_Calculator_Density)
   })
   it("The method read works right", {
-    path_league <- "../data/league_262_2021.csv"
+    path_league <- "tests/data/league_262_2021.csv"
     heat_map$read(path_league)
-    path_names <- "../data/names_ids_262_2021.csv"
+    path_names <- "tests/data/names_ids_262_2021.csv"
     heat_map$set_names(path_names)
   })
   it("The method get the correct names", {
@@ -142,5 +135,11 @@ describe("The function probability_win_draw_win", {
     expected_probability <- c(2 / 3, 1 / 3, 0)
     obtained_probability <- probability_win_draw_win(probable_score)
     expect_equal(expected_probability, obtained_probability)
+  })
+})
+
+describe("The class Matches", {
+  it("the builder exist", {
+    # matches <- Matches$new()
   })
 })

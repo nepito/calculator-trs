@@ -1,6 +1,6 @@
 Package: xGoal
 Title: xGoal
-Version: 21.08.20
+Version: 21.08.27
 Authors@R: c(
     person(given = "Nepo Rojas",
            family = "GECI",
@@ -11,15 +11,17 @@ Description: Set of tools inpired in the book xGoal
 Imports:
     comprehenr,
     data.table,
+    ggpubr,
     MASS,
     R6,
     tidyverse
 Suggests:
     devtools,
     roxygen2,
-    testthat
+    testthat (>= 3.0.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
+Config/testthat/edition: 3

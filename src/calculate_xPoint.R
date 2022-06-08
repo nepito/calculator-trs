@@ -15,8 +15,8 @@ league[is.na(league)] <- 0
 league <- league %>%
   add_home_shots_outsidebox() %>%
   add_away_shots_outsidebox() %>%
-  mutate("home_xGol" = calculate_xgoal(xGol, home_shots_outsidebox, home_shots_insidebox)) %>%
-  mutate("away_xGol" = calculate_xgoal(xGol, away_shots_outsidebox, away_shots_insidebox))
+  mutate("home_xGol" = calculate_xgoal(xGol, home_shots_outsidebox, home_shots_insidebox, home_total_penalties)) %>%
+  mutate("away_xGol" = calculate_xgoal(xGol, away_shots_outsidebox, away_shots_insidebox, away_total_penalties))
 
 league <- add_xpoints_and_points(league)
 
